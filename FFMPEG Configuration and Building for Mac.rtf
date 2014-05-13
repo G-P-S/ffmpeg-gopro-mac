@@ -58,6 +58,8 @@ make clean && make && make install\
 make clean && make && make install\
 \
 - after building the binaries, you will likely have to set the rpath using install_name_tool (and checking via tool) via something like:\
+# create a new folder in the hierarchy called 'rpathed' and copy the binaries to a new folder\
+# the binaries are part of a web of aliases, the app of which is looking for the binary with the major version number, thus lop the minor and build number off the copied binary\
 # go to directory containing dylibs\
 cd path/to/dylibs\
 # on each of the binaries to be used, run install_name_tool w/ the -id flag and following args to set the rpath on each of the\

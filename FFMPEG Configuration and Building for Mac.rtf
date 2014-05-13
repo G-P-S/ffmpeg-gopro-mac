@@ -1,0 +1,76 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
+{\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue233;\red28\green0\blue207;}
+\margl1440\margr1440\vieww19980\viewh13680\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf0 - Install MacPorts:\
+search for MacPorts and install it\
+\
+- Install pkgconfig\
+search for pkgconfig and install it\
+\
+- in Terminal call\
+sudo port install pkgconfig\
+\
+- download gas-preprocessor file\
+\pard\pardeftab720
+{\field{\*\fldinst{HYPERLINK "https://github.com/yuvi/gas-preprocessor"}}{\fldrslt \cf2 \ul \ulc2 https://github.com/yuvi/gas-preprocessor}}\
+\
+place the 'gas-preprocessor.pl' file in usr/bin\
+and set its preferences to that everyone has read and write access\
+\
+- Clone the FFMPEG git repository:\
+git clone git://source.ffmpeg.org/ffmpeg.git ~/ffmpeg\
+\
+- Create directories for the build products:\
+cd ffmpeg (where ever it is)\
+mkdir i386\
+mkdir x86_64\
+\
+- Configure FFMPEG and build it for each architecture:
+\b \
+i386
+\b0 \
+./configure --prefix=i386 --disable-static --disable-network --disable-debug --enable-shared --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver --enable-avresample --enable-cross-compile --sysroot="
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10\cf3 .8\cf0 .sdk"
+\f0\fs24 \CocoaLigature1  --target-os=darwin --cc="
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/usr/bin/gcc
+\f0\fs24 \CocoaLigature1 " --extra-cflags="-arch i386" --extra-ldflags="-arch i386 -isysroot 
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10\cf3 .8\cf0 .sdk
+\f0\fs24 \CocoaLigature1 " --arch=i386 --cpu=i386 --enable-pic --disable-asm\
+\
+make clean && make && make install\
+\
+\pard\pardeftab720
+
+\b \cf0 x86_64
+\b0 \
+./configure --prefix=x86_64 --disable-static --disable-network --disable-debug --enable-shared --disable-ffmpeg --disable-ffplay --disable-ffprobe --disable-ffserver --enable-avresample --enable-cross-compile --sysroot="
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10\cf3 .8\cf0 .sdk"
+\f0\fs24 \CocoaLigature1  --target-os=darwin --cc="
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/usr/bin/gcc
+\f0\fs24 \CocoaLigature1 " --extra-cflags="-arch x86_64" --extra-ldflags="-arch x86_64 -isysroot 
+\f1\fs22 \CocoaLigature0 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10\cf3 .8\cf0 .sdk
+\f0\fs24 \CocoaLigature1 " --arch=x86_64 --cpu=x86_64 --enable-pic --disable-asm\
+\
+make clean && make && make install\
+\
+- after building the binaries, you will likely have to set the rpath using install_name_tool (and checking via tool) via something like:\
+# go to directory containing dylibs\
+cd path/to/dylibs\
+# on each of the binaries to be used, run install_name_tool w/ the -id flag and following args to set the rpath on each of the\
+install_name_tool -id @rpath/../Frameworks/<dylib-name> <dylib-name>\
+# run otool on each of the rpath'd binaries to ensure that the run path was set properly\
+otool -L <dylib-name>\
+\
+- after setting rpath, you may have to correct hard-coded FFMPEG inter-binary search paths, which are set in the dylibs\
+# go to directory containing dylibs\
+cd path/to/dylibs\
+# run otool on each of the rpath'd binaries to ensure that the run path was set properly\
+otool -L <name-of-dylib-we-are-tweaking>\
+# for any search paths to OTHER dlls on which the given dll depends, which show up in the output, which have hardcoded paths NOT into the /usr folder, but rather into FFMPEG build locations, IE i386/libs/  or x86_64/libs/,  perform the following (using i386/lib as an example\
+install_name_tool -change i386/lib/<name-of-dylib-to-which-we-are-linking> @rpath/../Frameworks/<name-of-dylib-to-which-we-are-linking> <name-of-dylib-we-are-tweaking>\
+\
+}

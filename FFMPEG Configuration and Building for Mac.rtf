@@ -75,4 +75,21 @@ otool -L <name-of-dylib-we-are-tweaking>\
 # for any search paths to OTHER dlls on which the given dll depends, which show up in the output, which have hardcoded paths NOT into the /usr folder, but rather into FFMPEG build locations, IE i386/libs/  or x86_64/libs/,  perform the following (using i386/lib as an example\
 install_name_tool -change i386/lib/<name-of-dylib-to-which-we-are-linking> @rpath/../Frameworks/<name-of-dylib-to-which-we-are-linking> <name-of-dylib-we-are-tweaking>\
 \
+
+\b - To also include x264 in your build of FFMPEG. 
+\b0 \
+1) From VideoLan.org download a tarball of the current x264 snapshot (search on "VLC x264") and unstuff it.\
+2) From yasm.tortall.net download the source for yasm and unstuff it\
+3) navigate to the root yasm directory and run './configure' and 'make'\
+4) copy the resultant 'yasm' executable to the /usr/bin folder\
+5) navigate to the unstuffed x264 snapshot folder and:\
+- For x86_64 build, simply run:\
+$ ./configure\
+$ make\
+- For i386 run:\
+$ ./configure --enable-pic --enable-shared --disable-asm --host=i686-apple-darwin11.1.0 --extra-cflags="-arch i386" --extra-ldflags="-arch i386"\
+$ make\
+6) loose in the x264 snapshot folder find the libx264.a file that got built as a result of the 'make' and copy it to a standard location, say '/usr/local/bin'\
+7) perform the exact same procedure listed above for building FFMPEG with the addition of the following ./configure argument flags "--extra-cflags="-I<root-x264-directory>" --extra-ldflags="-L<directory-to-which-you-copied-libx264.a>" --enable-gpl --enable-libx264\
+\
 }

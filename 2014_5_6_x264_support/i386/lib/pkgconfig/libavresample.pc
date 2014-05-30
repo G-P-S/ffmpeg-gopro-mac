@@ -1,0 +1,14 @@
+prefix=i386
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libavresample
+Description: Libav audio resampling library
+Version: 1.2.0
+Requires: 
+Requires.private: libavutil = 52.81.100
+Conflicts:
+Libs: -L${libdir}  -lavresample 
+Libs.private: -liconv -lx264 -lm -lbz2 -lz -pthread
+Cflags: -I${includedir}

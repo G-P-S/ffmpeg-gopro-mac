@@ -90,6 +90,6 @@ $ make\
 $ ./configure --enable-pic --enable-shared --disable-asm --host=i686-apple-darwin11.1.0 --extra-cflags="-arch i386" --extra-ldflags="-arch i386"\
 $ make\
 6) loose in the x264 snapshot folder find the libx264.a file that got built as a result of the 'make' and copy it to a standard location, say '/usr/local/bin'\
-7) perform the exact same procedure listed above for building FFMPEG with the addition of the following ./configure argument flags "--extra-cflags="-I<root-x264-directory>" --extra-ldflags="-L<directory-to-which-you-copied-libx264.a>" --enable-gpl --enable-libx264\
+7) perform the exact same procedure listed above for building FFMPEG with the addition of the following ./configure argument flags: --extra-cflags="-I<root-x264-directory>" --extra-ldflags="-L<directory-to-which-you-copied-libx264.a>" --enable-gpl --enable-libx264 --enable-encoder="aac"\
 \
 }

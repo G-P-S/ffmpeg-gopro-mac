@@ -57,9 +57,14 @@ make clean && make && make install\
 \
 make clean && make && make install\
 \
-- after building the binaries, you will likely have to set the rpath using install_name_tool (and checking via tool) via something like:\
+
+\b IMPORTANT NOTE: FFMPEG on mac builds binaries that have a web of aliases. On top of this, the binaries have rpaths set internally that refer to these aliases, NOT the actual binaries. Seemingly on Mac, this is not valid and not very friendly to the linker internal to Xcode. To remedy this we must do the following:\
+A) for the FFMPEG binaries we will be using, we must set their name properly. By default, the actual binaries have a name something like this: DylibName.MajorNumer.MinorNumber.RevisionNumber.dylib. While internally the binaries reference and link against only DylibName.MajorNumber.dylib. Thus we need to change the name of the binaries we will be using to have the name expected and used during inter-linking - that being DylibName.MajorNumber.dylib
+\b0 \
+\
+- after building the binaries and changing the names of the actual binaries, you will likely have to set the rpath using install_name_tool (and checking via tool) via something like:\
 # create a new folder in the hierarchy called 'rpathed' and copy the binaries to a new folder\
-# the binaries are part of a web of aliases, the app of which is looking for the binary with the major version number, thus lop the minor and build number off the copied binary\
+# the binaries are part of a web of aliases, the app of which is looking for the binary with the major version number, thus (again\'85) lop the minor and build number off the copied binary\
 # go to directory containing dylibs\
 cd path/to/dylibs\
 # on each of the binaries to be used, run install_name_tool w/ the -id flag and following args to set the rpath on each of the\
@@ -74,8 +79,10 @@ cd path/to/dylibs\
 otool -L <name-of-dylib-we-are-tweaking>\
 # for any search paths to OTHER dlls on which the given dll depends, which show up in the output, which have hardcoded paths NOT into the /usr folder, \
 # but rather into FFMPEG build locations, IE i386/libs/  or x86_64/libs/,  perform the following (using i386/lib as an example), noting that\
-# these paths also represent part of a web of aliases, the app of which is looking for the binary with the major version number, thus ensure only the major number is included in these paths\
-install_name_tool -change i386/lib/<name-of-dylib-to-which-we-are-linking> @rpath/../Frameworks/<name-of-dylib-to-which-we-are-linking> <name-of-dylib-we-are-tweaking>\
+# these paths also represent part of a web of aliases, the app of which is looking for the 
+\b binary with the major version number, thus ensure only the major number is included in these paths
+\b0 \
+install_name_tool -change i386/lib/<name-of-dylib-to-which-we-are-linking-MINUS-MINOR-AND-REVISION-NUMBER> @rpath/../Frameworks/<name-of-dylib-to-which-we-are-linking-MINUS-MINOR-AND-REVISION-NUMBER> <name-of-dylib-we-are-tweaking>\
 \
 
 \b - To also include x264 in your build of FFMPEG. 

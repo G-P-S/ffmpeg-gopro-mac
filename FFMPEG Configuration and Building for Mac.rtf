@@ -1,7 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
 {\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fnil\fcharset0 Menlo-Regular;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue233;\red28\green0\blue207;}
-\margl1440\margr1440\vieww19980\viewh17480\viewkind0
+\margl1440\margr1440\vieww26940\viewh17480\viewkind0
 \deftab720
 \pard\pardeftab720
 
@@ -72,7 +72,9 @@ otool -L <dylib-name>\
 cd path/to/dylibs\
 # run otool on each of the rpath'd binaries to ensure that the run path was set properly\
 otool -L <name-of-dylib-we-are-tweaking>\
-# for any search paths to OTHER dlls on which the given dll depends, which show up in the output, which have hardcoded paths NOT into the /usr folder, but rather into FFMPEG build locations, IE i386/libs/  or x86_64/libs/,  perform the following (using i386/lib as an example\
+# for any search paths to OTHER dlls on which the given dll depends, which show up in the output, which have hardcoded paths NOT into the /usr folder, \
+# but rather into FFMPEG build locations, IE i386/libs/  or x86_64/libs/,  perform the following (using i386/lib as an example), noting that\
+# these paths also represent part of a web of aliases, the app of which is looking for the binary with the major version number, thus ensure only the major number is included in these paths\
 install_name_tool -change i386/lib/<name-of-dylib-to-which-we-are-linking> @rpath/../Frameworks/<name-of-dylib-to-which-we-are-linking> <name-of-dylib-we-are-tweaking>\
 \
 

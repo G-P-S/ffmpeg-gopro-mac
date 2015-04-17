@@ -1,0 +1,14 @@
+prefix=x86_64
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 55.37.102
+Requires: 
+Requires.private: libavcodec = 55.60.103
+Conflicts:
+Libs: -L${libdir}  -lavformat 
+Libs.private: -framework QTKit -framework Foundation -framework QuartzCore -framework CoreVideo -framework Foundation -framework AVFoundation -framework CoreMedia -framework CoreFoundation -framework VideoDecodeAcceleration -framework QuartzCore -liconv -lm -lbz2 -lz -pthread
+Cflags: -I${includedir}

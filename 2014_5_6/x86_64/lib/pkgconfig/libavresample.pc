@@ -1,0 +1,14 @@
+prefix=x86_64
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libavresample
+Description: Libav audio resampling library
+Version: 1.2.0
+Requires: 
+Requires.private: libavutil = 52.81.100
+Conflicts:
+Libs: -L${libdir}  -lavresample 
+Libs.private: -framework QTKit -framework Foundation -framework QuartzCore -framework CoreVideo -framework Foundation -framework AVFoundation -framework CoreMedia -framework CoreFoundation -framework VideoDecodeAcceleration -framework QuartzCore -liconv -lm -lbz2 -lz -pthread
+Cflags: -I${includedir}
